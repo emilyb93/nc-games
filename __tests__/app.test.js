@@ -3,6 +3,7 @@ const request = require("supertest");
 const db = require("../db/connection");
 const testData = require("../db/data/test-data");
 const seed = require("../db/seeds/seed");
+const req = require("express/lib/request");
 
 beforeEach(() => seed(testData));
 
@@ -23,6 +24,19 @@ describe("/api/categories", () => {
           slug: expect.any(String),
           description: expect.any(String),
         });
+      });
+    });
+  });
+});
+
+describe("Error Handling - Misc", () => {
+  describe("/api/not_an_endpoint", () => {
+    describe("GET", () => {
+      test("should respond with a 404 and a message of Not Found", async () => {
+        const res = await request(app).get("/api/not_an_endpoint");
+
+        expect(res.status).toBe(404);
+        expect(res.body.msg).toBe("Not Found");
       });
     });
   });
