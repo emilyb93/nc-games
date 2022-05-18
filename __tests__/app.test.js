@@ -30,21 +30,21 @@ describe("/api/categories", () => {
 describe("/api/reviews/:review_id", () => {
   describe("GET", () => {
     test("respond with a 200 and an object with the review information", async () => {
-      const res = await request(app).get("/api/reviews/2");
+      const res = await request(app).get("/api/reviews/1");
 
       expect(res.status).toBe(200);
       const { review } = res.body;
 
       expect(review).toMatchObject({
-        review_id: 2,
-        title: expect.any(String),
-        review_body: expect.any(String),
-        designer: expect.any(String),
-        review_img_url: expect.any(String),
-        votes: expect.any(Number),
-        category: expect.any(String),
-        owner: expect.any(String),
-        created_at: expect.any(String),
+        title: "Agricola",
+        designer: "Uwe Rosenberg",
+        owner: "mallionaire",
+        review_img_url:
+          "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+        review_body: "Farmyard fun!",
+        category: "euro game",
+        created_at: "2021-01-18T10:00:20.514Z",
+        votes: 1,
       });
     });
 
