@@ -57,6 +57,13 @@ describe("/api/reviews/:review_id", () => {
       expect(res.body.msg).toBe("Not Found");
     });
   });
+
+  test("should respond with a 400 if the review id is not an integer", async () => {
+    const res = await request(app).get("/api/reviews/not_an_int");
+
+    expect(res.status).toBe(400);
+    expect(res.body.msg).toBe("Bad Request");
+  });
 });
 
 describe("Error Handling - Misc", () => {
