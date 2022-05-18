@@ -49,6 +49,13 @@ describe("/api/reviews/:review_id", () => {
         created_at: expect.any(String),
       });
     });
+
+    test("should respond with 404 if a valid number is out of range for the articles in the database", async () => {
+      const res = await request(app).get("/api/reviews/9001");
+
+      expect(res.status).toBe(404);
+      expect(res.body.msg).toBe("Not Found");
+    });
   });
 });
 
