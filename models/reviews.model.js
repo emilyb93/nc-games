@@ -20,7 +20,7 @@ exports.updateReview = async (id, { inc_votes }) => {
   );
 
   if (!rows.length) {
-    throw new Error({ status: 404, msg: "Review Not Found" });
+    return Promise.reject({ status: 404, msg: "Review Not Found" });
   }
 
   return rows[0];

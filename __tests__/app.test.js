@@ -81,6 +81,14 @@ describe("/api/reviews/:review_id", () => {
         votes: 25,
       });
     });
+
+    test("should respond with 400 if passed an out of range review id", async () => {
+      const voteObj = { inc_votes: 20 };
+      const res = await request(app).patch("/api/reviews/9001").send(voteObj);
+
+      expect(res.status).toBe(404);
+      expect(res.body.msg).toBe("Review Not Found");
+    });
   });
 });
 
