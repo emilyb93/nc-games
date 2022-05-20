@@ -82,12 +82,28 @@ describe("/api/reviews/:review_id", () => {
       });
     });
 
-    test("should respond with 400 if passed an out of range review id", async () => {
+    test("should respond with 404 if passed an out of range review id", async () => {
       const voteObj = { inc_votes: 20 };
       const res = await request(app).patch("/api/reviews/9001").send(voteObj);
 
       expect(res.status).toBe(404);
       expect(res.body.msg).toBe("Review Not Found");
+    });
+
+    test("should respond with 400 if the review_id is the incorrect data type", async () => {
+      const voteObj = { inc_votes: 20 };
+      const res = await request(app).patch("/api/reviews/one").send(voteObj);
+
+      expect(res.status).toBe(400);
+      expect(res.body.msg).toBe("Bad Request");
+    });
+
+    test("should respond with 400 if the inc_votes is broken/missing", async () => {
+      const voteObj = { votes: 20 };
+      const res = await request(app).patch("/api/reviews/1").send(voteObj);
+
+      expect(res.status).toBe(400);
+      expect(res.body.msg).toBe("Bad Request");
     });
   });
 });
