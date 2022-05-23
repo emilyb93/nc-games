@@ -1,12 +1,12 @@
 const db = require("../db/connection");
 
-exports.fetchReview = async (id) => {
-  if (isNaN(id)) {
+exports.fetchReview = async (reviewId) => {
+  if (isNaN(reviewId)) {
     return Promise.reject({ status: 400, msg: "Bad Request" });
   }
 
-  let queryStr = `SELECT * FROM reviews WHERE review_id = $1`;
-  const queryVals = [id];
+  let queryStr = `SELECT * FROM reviews WHERE review_Id = $1`;
+  const queryVals = [reviewId];
 
   const { rows } = await db.query(queryStr, queryVals);
 
