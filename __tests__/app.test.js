@@ -127,7 +127,7 @@ describe("/api/reviews/:review_id", () => {
         expect(res.body.msg).toBe("Bad Request");
       });
 
-      test("should respond with 400 if the inc_votes property is missing", async () => {
+      test("should respond with 400 if sent an empty object", async () => {
         const voteObj = {};
         const res = await request(app).patch("/api/reviews/1").send(voteObj);
 
