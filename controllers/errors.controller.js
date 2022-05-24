@@ -9,6 +9,7 @@ exports.customErrorHandler = (err, req, res, next) => {
     res.status(err.status).send({ msg: err.msg });
   } else {
     next(err);
+
   }
 };
 
@@ -17,6 +18,7 @@ exports.psqlErrorHandler = (err, req, res, next) => {
     res.status(400).send({ msg: "Bad Request" });
   } else {
     next(err);
+
   }
 };
 

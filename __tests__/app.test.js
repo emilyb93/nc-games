@@ -62,6 +62,26 @@ describe("/api/reviews/:review_id", () => {
       expect(res.body.msg).toBe("Bad Request");
     });
   });
+
+  describe("/api/users", () => {
+    test("should respond with 200 and an array of users", async () => {
+      const res = await request(app).get("/api/users");
+
+      const { users } = res.body;
+      expect(res.status).toBe(200);
+      expect(users).toBeInstanceOf(Array);
+
+      expect(users).toHaveLength(4);
+
+      users.forEach((user) => {
+        expect(user).toMatchObject({
+          username: expect.any(String),
+          name: expect.any(String),
+          avatar_url: expect.any(String),
+        });
+      });
+    });
+  });
 });
 
 describe("Error Handling - Misc", () => {
