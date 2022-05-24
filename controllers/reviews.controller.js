@@ -2,9 +2,9 @@ const { fetchReview, updateReview } = require("../models/reviews.model.js");
 
 exports.sendReview = async (req, res, next) => {
   try {
-    const { review_id } = req.params;
+    const { review_id: reviewId } = req.params;
 
-    const review = await fetchReview(review_id);
+    const review = await fetchReview(reviewId);
 
     res.status(200).send({ review });
   } catch (err) {
