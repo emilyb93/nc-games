@@ -46,9 +46,8 @@ describe("/api/reviews/:review_id", () => {
         created_at: "2021-01-18T10:00:20.514Z",
         votes: 1,
       });
-    });
-
-    test("should respond with a review object containing a comment_count as an int", async () => {
+      
+      test("should respond with a review object containing a comment_count as an int", async () => {
       const res = await request(app).get("/api/reviews/2");
 
       const { review } = res.body;
@@ -57,18 +56,122 @@ describe("/api/reviews/:review_id", () => {
       expect(review).toHaveProperty("comment_count");
       expect(review.comment_count).toBe(3);
     });
-    test("should respond with 404 if a valid number is out of range for the articles in the database", async () => {
-      const res = await request(app).get("/api/reviews/9001");
-
-      expect(res.status).toBe(404);
-      expect(res.body.msg).toBe("Not Found");
     });
 
-    test("should respond with a 400 if the review id is not an integer", async () => {
-      const res = await request(app).get("/api/reviews/not_an_int");
 
-      expect(res.status).toBe(400);
-      expect(res.body.msg).toBe("Bad Request");
+    describe("errors", () => {
+      test("should respond with 404 if a valid number is out of range for the articles in the database", async () => {
+        const res = await request(app).get("/api/reviews/9001");
+        expect(res.status).toBe(404);
+        expect(res.body.msg).toBe("Not Found");
+      });
+
+      test("should respond with a 400 if the review id is not an integer", async () => {
+        const res = await request(app).get("/api/reviews/not_an_int");
+
+        expect(res.status).toBe(400);
+        expect(res.body.msg).toBe("Bad Request");
+      });
+    });
+  });
+
+  describe("PATCH", () => {
+    test("should respond with the updated review", async () => {
+      const voteObj = { inc_votes: 20 };
+      const res = await request(app).patch("/api/reviews/2").send(voteObj);
+
+      expect(res.status).toBe(200);
+      expect(res.body.review).toMatchObject({
+        title: "Jenga",
+        designer: "Leslie Scott",
+        owner: "philippaclaire9",
+        review_img_url:
+          "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+        review_body: "Fiddly fun for all the family",
+        category: "dexterity",
+        created_at: "2021-01-18T10:01:41.251Z",
+        votes: 25,
+      });
+    });
+
+    test("should work with negative values", async () => {
+      const voteObj = { inc_votes: -4 };
+      const res = await request(app).patch("/api/reviews/2").send(voteObj);
+
+      expect(res.status).toBe(200);
+      expect(res.body.review).toMatchObject({
+        title: "Jenga",
+        designer: "Leslie Scott",
+        owner: "philippaclaire9",
+        review_img_url:
+          "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+        review_body: "Fiddly fun for all the family",
+        category: "dexterity",
+        created_at: "2021-01-18T10:01:41.251Z",
+        votes: 1,
+      });
+    });
+
+    describe("errors", () => {
+      test("should respond with 404 if passed an out of range review id", async () => {
+        const voteObj = { inc_votes: 20 };
+        const res = await request(app).patch("/api/reviews/9001").send(voteObj);
+
+        expect(res.status).toBe(404);
+        expect(res.body.msg).toBe("Review Not Found");
+      });
+
+      test("should respond with 400 if the review_id is the incorrect data type", async () => {
+        const voteObj = { inc_votes: 20 };
+        const res = await request(app).patch("/api/reviews/one").send(voteObj);
+
+        expect(res.status).toBe(400);
+        expect(res.body.msg).toBe("Bad Request");
+      });
+
+      test("should respond with 400 if the key is incorrect", async () => {
+        const voteObj = { votes: 20 };
+        const res = await request(app).patch("/api/reviews/1").send(voteObj);
+
+        expect(res.status).toBe(400);
+        expect(res.body.msg).toBe("Bad Request");
+      });
+
+      test("should respond with 400 if sent an empty object", async () => {
+        const voteObj = {};
+        const res = await request(app).patch("/api/reviews/1").send(voteObj);
+
+        expect(res.status).toBe(400);
+        expect(res.body.msg).toBe("Bad Request");
+      });
+
+      test("should respond with 400 if the inc_votes property is the wrong data type", async () => {
+        const voteObj = { inc_votes: "twenty" };
+        const res = await request(app).patch("/api/reviews/1").send(voteObj);
+
+        expect(res.status).toBe(400);
+        expect(res.body.msg).toBe("Bad Request");
+      });
+    });
+  });
+
+  describe("/api/users", () => {
+    test("should respond with 200 and an array of users", async () => {
+      const res = await request(app).get("/api/users");
+
+      const { users } = res.body;
+      expect(res.status).toBe(200);
+      expect(users).toBeInstanceOf(Array);
+
+      expect(users).toHaveLength(4);
+
+      users.forEach((user) => {
+        expect(user).toMatchObject({
+          username: expect.any(String),
+          name: expect.any(String),
+          avatar_url: expect.any(String),
+        });
+      });
     });
   });
 });
