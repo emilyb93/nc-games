@@ -190,6 +190,15 @@ describe("/api/:review_id/comments", () => {
         );
       });
     });
+
+    test("should respond with an empty array if the article exists but has no comments", async () => {
+      const res = await request(app).get("/api/2/comments");
+      const { comments } = res.body;
+
+      expect(res.status).toBe(200);
+      expect(comments).toBeInstanceOf(Array);
+      expect(comments).toHaveLength(0);
+    });
   });
 });
 
