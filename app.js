@@ -14,6 +14,8 @@ const {
 
 const { sendUsers } = require("./controllers/users.controller.js");
 
+const { sendComments } = require("./controllers/comments.controller.js");
+
 const express = require("express");
 const app = express();
 
@@ -24,6 +26,8 @@ app.get("/api/categories", sendCategories);
 app.get("/api/reviews", sendAllReviews);
 
 app.route("/api/reviews/:review_id").get(sendReview).patch(patchReview);
+
+app.get("/api/:review_id/comments", sendComments);
 
 app.get("/api/users", sendUsers);
 
