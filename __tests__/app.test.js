@@ -3,8 +3,6 @@ const request = require("supertest");
 const db = require("../db/connection");
 const testData = require("../db/data/test-data");
 const seed = require("../db/seeds/seed");
-const req = require("express/lib/request");
-const { string } = require("pg-format");
 
 beforeEach(() => seed(testData));
 
