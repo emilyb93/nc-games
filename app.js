@@ -14,7 +14,10 @@ const {
 
 const { sendUsers } = require("./controllers/users.controller.js");
 
-const { sendComments } = require("./controllers/comments.controller.js");
+const {
+  sendComments,
+  addComment,
+} = require("./controllers/comments.controller.js");
 
 const express = require("express");
 const app = express();
@@ -27,7 +30,10 @@ app.get("/api/reviews", sendAllReviews);
 
 app.route("/api/reviews/:review_id").get(sendReview).patch(patchReview);
 
-app.get("/api/:review_id/comments", sendComments);
+app
+  .route("/api/reviews/:review_id/comments")
+  .get(sendComments)
+  .post(addComment);
 
 app.get("/api/users", sendUsers);
 

@@ -198,13 +198,21 @@ describe("/api/reviews", () => {
         );
       });
     });
+
+    test("should respond with an array of reviews sorted by created_at in descending order", async () => {
+      const res = await request(app).get("/api/reviews");
+      const { reviews } = res.body;
+      expect(res.status).toBe(200);
+
+      expect(reviews).toBeSortedBy("created_at", { descending: true });
+    });
   });
 });
 
-describe("/api/:review_id/comments", () => {
+describe("/api/reviews/:review_id/comments", () => {
   describe("GET", () => {
     test("should respond with an array of comments for that specific review_id only ", async () => {
-      const res = await request(app).get("/api/2/comments");
+      const res = await request(app).get("/api/reviews/2/comments");
       const { comments } = res.body;
 
       expect(res.status).toBe(200);
@@ -225,36 +233,58 @@ describe("/api/:review_id/comments", () => {
       });
     });
 
-    test("should respond with an array of reviews sorted by created_at in descending order", async () => {
-      const res = await request(app).get("/api/reviews");
-      const { reviews } = res.body;
-      expect(res.status).toBe(200);
-
-      expect(reviews).toBeSortedBy("created_at", { descending: true });
-    });
     test("should respond with an empty array if the article exists but has no comments", async () => {
-      const res = await request(app).get("/api/1/comments");
+      const res = await request(app).get("/api/reviews/1/comments");
       const { comments } = res.body;
 
       expect(res.status).toBe(200);
       expect(comments).toBeInstanceOf(Array);
       expect(comments).toHaveLength(0);
     });
+
+    describe("errors", () => {
+      test("should return 404 if the article does not exist", async () => {
+        const res = await request(app).get("/api/reviews/9001/comments");
+
+        expect(res.status).toBe(404);
+        expect(res.body.msg).toBe("Not Found");
+      });
+
+      test("should return 400 if the article id is not an int", async () => {
+        const res = await request(app).get("/api/reviews/not_an_int/comments");
+
+        expect(res.status).toBe(400);
+        expect(res.body.msg).toBe("Bad Request");
+      });
+    });
   });
 
-  describe("errors", () => {
-    test("should return 404 if the article does not exist", async () => {
-      const res = await request(app).get("/api/9001/comments");
+  describe("POST", () => {
+    test("should respond with 201 and an object of the posted comment with the new keys added", async () => {
+      const newComment = {
+        username: "mallionaire",
+        body: "jiminy jillickers batman",
+      };
 
-      expect(res.status).toBe(404);
-      expect(res.body.msg).toBe("Not Found");
-    });
+      const res = await request(app)
+        .post("/api/reviews/2/comments")
+        .send(newComment);
 
-    test("should return 400 if the article id is not an int", async () => {
-      const res = await request(app).get("/api/not_an_int/comments");
+      const { comment } = res.body;
+      console.log(res.body);
 
-      expect(res.status).toBe(400);
-      expect(res.body.msg).toBe("Bad Request");
+      expect(res.status).toBe(201);
+
+      expect(comment).toMatchObject(
+        expect.objectContaining({
+          author: "mallionaire",
+          body: "jiminy jillickers batman",
+          review_id: 2,
+          votes: 0,
+          created_at: expect.any(String),
+          comment_id: 7,
+        })
+      );
     });
   });
 });
