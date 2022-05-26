@@ -176,7 +176,7 @@ describe("/api/reviews", () => {
       expect(reviews).toBeInstanceOf(Array);
       expect(reviews).toHaveLength(13);
 
-      review.forEach((review) => {
+      reviews.forEach((review) => {
         expect(review).toMatchObject(
           expect.objectContaining({
             owner: expect.any(String),
@@ -184,7 +184,7 @@ describe("/api/reviews", () => {
             review_id: expect.any(Number),
             category: expect.any(String),
             review_img_url: expect.any(String),
-            created_at: expect.any(Date),
+            created_at: expect.any(String),
             votes: expect.any(Number),
             comment_count: expect.any(Number),
           })
