@@ -166,6 +166,42 @@ describe("/api/reviews/:review_id", () => {
   });
 });
 
+describe("/api/reviews", () => {
+  describe("GET", () => {
+    test("should respond with an array of all the reviews with the relevant keys", async () => {
+      const res = await request(app).get("/api/reviews");
+      const { reviews } = res.body;
+      expect(res.status).toBe(200);
+
+      expect(reviews).toBeInstanceOf(Array);
+      expect(reviews).toHaveLength(13);
+
+      review.forEach((review) => {
+        expect(review).toMatchObject(
+          expect.objectContaining({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(Date),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          })
+        );
+      });
+    });
+
+    test("should respond with an array of reviews sorted by created_at in descending order", async () => {
+      const res = await request(app).get("/api/reviews");
+      const { reviews } = res.body;
+      expect(res.status).toBe(200);
+
+      expect(reviews).toBeSortedBy("created_at", { descending: true });
+    });
+  });
+});
+
 describe("Error Handling - Misc", () => {
   describe("/api/not_an_endpoint", () => {
     describe("GET", () => {
