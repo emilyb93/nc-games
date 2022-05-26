@@ -10,20 +10,21 @@ const {
   sendReview,
   patchReview,
 } = require("./controllers/reviews.controller.js");
-  
+
 const { sendUsers } = require("./controllers/users.controller.js");
+
+const { sendComments } = require("./controllers/comments.controller.js");
 
 const express = require("express");
 const app = express();
-
-
-
 
 app.use(express.json());
 
 app.get("/api/categories", sendCategories);
 
 app.route("/api/reviews/:review_id").get(sendReview).patch(patchReview);
+
+app.get("/api/:review_id/comments", sendComments);
 
 app.get("/api/users", sendUsers);
 
