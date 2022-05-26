@@ -47,12 +47,22 @@ describe("/api/reviews/:review_id", () => {
         created_at: "2021-01-18T10:00:20.514Z",
         votes: 1,
       });
+      
+      test("should respond with a review object containing a comment_count as an int", async () => {
+      const res = await request(app).get("/api/reviews/2");
+
+      const { review } = res.body;
+      expect(res.status).toBe(200);
+
+      expect(review).toHaveProperty("comment_count");
+      expect(review.comment_count).toBe(3);
     });
+    });
+
 
     describe("errors", () => {
       test("should respond with 404 if a valid number is out of range for the articles in the database", async () => {
         const res = await request(app).get("/api/reviews/9001");
-
         expect(res.status).toBe(404);
         expect(res.body.msg).toBe("Not Found");
       });
