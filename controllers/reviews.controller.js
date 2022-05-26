@@ -1,4 +1,8 @@
-const { fetchReview, updateReview } = require("../models/reviews.model.js");
+const {
+  fetchReview,
+  updateReview,
+  fetchAllReviews,
+} = require("../models/reviews.model.js");
 
 exports.sendReview = async (req, res, next) => {
   try {
@@ -20,6 +24,16 @@ exports.patchReview = async (req, res, next) => {
     const review = await updateReview(reviewId, voteObj);
 
     res.status(200).send({ review });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.sendAllReviews = async (req, res, next) => {
+  try {
+    const reviews = await fetchAllReviews();
+
+    res.status(200).send({ reviews });
   } catch (err) {
     next(err);
   }

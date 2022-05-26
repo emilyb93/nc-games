@@ -167,6 +167,33 @@ describe("/api/reviews/:review_id", () => {
   });
 });
 
+
+describe("/api/reviews", () => {
+  describe("GET", () => {
+    test("should respond with an array of all the reviews with the relevant keys", async () => {
+      const res = await request(app).get("/api/reviews");
+      const { reviews } = res.body;
+      expect(res.status).toBe(200);
+
+      expect(reviews).toBeInstanceOf(Array);
+      expect(reviews).toHaveLength(13);
+
+      reviews.forEach((review) => {
+        expect(review).toMatchObject(
+          expect.objectContaining({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+          });
+      });
+    });
+
 describe("/api/:review_id/comments", () => {
   describe("GET", () => {
     test("should respond with an array of comments for that specific review_id only ", async () => {
@@ -186,11 +213,20 @@ describe("/api/:review_id/comments", () => {
             author: expect.any(String),
             body: expect.any(String),
             review_id: 2,
+
           })
         );
       });
-    });
+    
 
+
+    test("should respond with an array of reviews sorted by created_at in descending order", async () => {
+      const res = await request(app).get("/api/reviews");
+      const { reviews } = res.body;
+      expect(res.status).toBe(200);
+
+      expect(reviews).toBeSortedBy("created_at", { descending: true });
+    });
     test("should respond with an empty array if the article exists but has no comments", async () => {
       const res = await request(app).get("/api/1/comments");
       const { comments } = res.body;
@@ -214,6 +250,7 @@ describe("/api/:review_id/comments", () => {
 
       expect(res.status).toBe(400);
       expect(res.body.msg).toBe("Bad Request");
+
     });
   });
 });
