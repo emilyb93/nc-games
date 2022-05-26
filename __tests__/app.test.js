@@ -47,8 +47,8 @@ describe("/api/reviews/:review_id", () => {
         created_at: "2021-01-18T10:00:20.514Z",
         votes: 1,
       });
-      
-      test("should respond with a review object containing a comment_count as an int", async () => {
+    });
+    test("should respond with a review object containing a comment_count as an int", async () => {
       const res = await request(app).get("/api/reviews/2");
 
       const { review } = res.body;
@@ -57,8 +57,6 @@ describe("/api/reviews/:review_id", () => {
       expect(review).toHaveProperty("comment_count");
       expect(review.comment_count).toBe(3);
     });
-    });
-
 
     describe("errors", () => {
       test("should respond with 404 if a valid number is out of range for the articles in the database", async () => {
@@ -177,7 +175,6 @@ describe("/api/reviews/:review_id", () => {
   });
 });
 
-
 describe("/api/reviews", () => {
   describe("GET", () => {
     test("should respond with an array of all the reviews with the relevant keys", async () => {
@@ -199,10 +196,12 @@ describe("/api/reviews", () => {
             created_at: expect.any(String),
             votes: expect.any(Number),
             comment_count: expect.any(Number),
-          });
-          });
+          })
+        );
       });
     });
+  });
+});
 
 describe("/api/:review_id/comments", () => {
   describe("GET", () => {
@@ -223,12 +222,10 @@ describe("/api/:review_id/comments", () => {
             author: expect.any(String),
             body: expect.any(String),
             review_id: 2,
-
           })
         );
       });
-    
-
+    });
 
     test("should respond with an array of reviews sorted by created_at in descending order", async () => {
       const res = await request(app).get("/api/reviews");
@@ -260,7 +257,6 @@ describe("/api/:review_id/comments", () => {
 
       expect(res.status).toBe(400);
       expect(res.body.msg).toBe("Bad Request");
-
     });
   });
 });
