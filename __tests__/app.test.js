@@ -48,6 +48,15 @@ describe("/api/reviews/:review_id", () => {
       });
     });
 
+    test("should respond with a review object containing a comment_count as an int", async () => {
+      const res = await request(app).get("/api/reviews/2");
+
+      const { review } = res.body;
+      expect(res.status).toBe(200);
+
+      expect(review).toHaveProperty("comment_count");
+      expect(review.comment_count).toBe(3);
+    });
     test("should respond with 404 if a valid number is out of range for the articles in the database", async () => {
       const res = await request(app).get("/api/reviews/9001");
 
