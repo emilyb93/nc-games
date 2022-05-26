@@ -13,7 +13,6 @@ exports.fetchComments = async (reviewId) => {
   const [comments, reviews] = await Promise.all([commentsQuery, reviewQuery]);
 
   if (!reviews.rows.length) {
-    console.log("querys made");
     return Promise.reject({ status: 404, msg: "Not Found" });
   }
 
