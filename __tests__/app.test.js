@@ -192,12 +192,21 @@ describe("/api/:review_id/comments", () => {
     });
 
     test("should respond with an empty array if the article exists but has no comments", async () => {
-      const res = await request(app).get("/api/2/comments");
+      const res = await request(app).get("/api/1/comments");
       const { comments } = res.body;
 
       expect(res.status).toBe(200);
       expect(comments).toBeInstanceOf(Array);
       expect(comments).toHaveLength(0);
+    });
+  });
+
+  describe("errors", () => {
+    test("should return 404 if the article does not exist", async () => {
+      const res = await request(app).get("/api/9001/comments");
+
+      expect(res.status).toBe(404);
+      expect(res.body.msg).toBe("Not Found");
     });
   });
 });
