@@ -4,6 +4,7 @@ const db = require("../db/connection");
 const testData = require("../db/data/test-data");
 const seed = require("../db/seeds/seed");
 const req = require("express/lib/request");
+const { string } = require("pg-format");
 
 beforeEach(() => seed(testData));
 
@@ -162,6 +163,57 @@ describe("/api/reviews/:review_id", () => {
           avatar_url: expect.any(String),
         });
       });
+    });
+  });
+});
+
+describe("/api/:review_id/comments", () => {
+  describe("GET", () => {
+    test("should respond with an array of comments for that specific review_id only ", async () => {
+      const res = await request(app).get("/api/2/comments");
+      const { comments } = res.body;
+
+      expect(res.status).toBe(200);
+      expect(comments).toBeInstanceOf(Array);
+      expect(comments).toHaveLength(3);
+
+      comments.forEach((comment) => {
+        expect(comment).toMatchObject(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            review_id: 2,
+          })
+        );
+      });
+    });
+
+    test("should respond with an empty array if the article exists but has no comments", async () => {
+      const res = await request(app).get("/api/1/comments");
+      const { comments } = res.body;
+
+      expect(res.status).toBe(200);
+      expect(comments).toBeInstanceOf(Array);
+      expect(comments).toHaveLength(0);
+    });
+  });
+
+  describe("errors", () => {
+    test("should return 404 if the article does not exist", async () => {
+      const res = await request(app).get("/api/9001/comments");
+
+      expect(res.status).toBe(404);
+      expect(res.body.msg).toBe("Not Found");
+    });
+
+    test("should return 400 if the article id is not an int", async () => {
+      const res = await request(app).get("/api/not_an_int/comments");
+
+      expect(res.status).toBe(400);
+      expect(res.body.msg).toBe("Bad Request");
     });
   });
 });
