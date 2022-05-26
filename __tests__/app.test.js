@@ -208,6 +208,13 @@ describe("/api/:review_id/comments", () => {
       expect(res.status).toBe(404);
       expect(res.body.msg).toBe("Not Found");
     });
+
+    test("should return 400 if the article id is not an int", async () => {
+      const res = await request(app).get("/api/not_an_int/comments");
+
+      expect(res.status).toBe(400);
+      expect(res.body.msg).toBe("Bad Request");
+    });
   });
 });
 
