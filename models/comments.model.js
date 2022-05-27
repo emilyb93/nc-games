@@ -18,3 +18,12 @@ exports.fetchComments = async (reviewId) => {
 
   return comments.rows;
 };
+
+exports.insertComment = async (reviewId, { username, body }) => {
+  const { rows } = await db.query(
+    "INSERT INTO comments (author, review_id, body) VALUES ($1, $2, $3) RETURNING *",
+    [username, reviewId, body]
+  );
+
+  return rows[0];
+};
