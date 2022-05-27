@@ -352,6 +352,19 @@ describe("/api/reviews/:review_id/comments", () => {
         expect(res.status).toBe(400);
         expect(res.body.msg).toBe("Bad Request");
       });
+      test("should respond with 400 if username key is incorrect", async () => {
+        const newComment = {
+          user: "mallionaire",
+          body: "jiminy jillickers batman",
+        };
+
+        const res = await request(app)
+          .post("/api/reviews/1/comments")
+          .send(newComment);
+
+        expect(res.status).toBe(400);
+        expect(res.body.msg).toBe("Bad Request");
+      });
 
       test("should respond with 400 if the body is not sent", async () => {
         const res = await request(app).post("/api/reviews/1/comments");
