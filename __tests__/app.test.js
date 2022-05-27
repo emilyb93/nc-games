@@ -301,6 +301,20 @@ describe("/api/reviews/:review_id/comments", () => {
         expect(res.body.msg).toBe("Not Found");
       });
 
+      test("should respond with 404 if the username does not exist", async () => {
+        const newComment = {
+          username: "emilyb93",
+          body: "jiminy jillickers batman",
+        };
+
+        const res = await request(app)
+          .post("/api/reviews/1/comments")
+          .send(newComment);
+
+        expect(res.status).toBe(404);
+        expect(res.body.msg).toBe("Not Found");
+      });
+
       test("should respond with 400 if review_id is not an int", async () => {
         const newComment = {
           username: "mallionaire",
@@ -321,7 +335,7 @@ describe("/api/reviews/:review_id/comments", () => {
         };
 
         const res = await request(app)
-          .post("/api/reviews/not_an_int/comments")
+          .post("/api/reviews/1/comments")
           .send(newComment);
 
         expect(res.status).toBe(400);
@@ -333,8 +347,15 @@ describe("/api/reviews/:review_id/comments", () => {
         };
 
         const res = await request(app)
-          .post("/api/reviews/not_an_int/comments")
+          .post("/api/reviews/1/comments")
           .send(newComment);
+
+        expect(res.status).toBe(400);
+        expect(res.body.msg).toBe("Bad Request");
+      });
+
+      test("should respond with 400 if the body is not sent", async () => {
+        const res = await request(app).post("/api/reviews/1/comments");
 
         expect(res.status).toBe(400);
         expect(res.body.msg).toBe("Bad Request");
