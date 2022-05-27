@@ -286,6 +286,21 @@ describe("/api/reviews/:review_id/comments", () => {
         })
       );
     });
+    describe("errors", () => {
+      test("should respond with 404 if review_id doesnt exist", async () => {
+        const newComment = {
+          username: "mallionaire",
+          body: "jiminy jillickers batman",
+        };
+
+        const res = await request(app)
+          .post("/api/reviews/9001/comments")
+          .send(newComment);
+
+        expect(res.status).toBe(404);
+        expect(res.body.msg).toBe("Not Found");
+      });
+    });
   });
 });
 
