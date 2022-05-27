@@ -300,6 +300,20 @@ describe("/api/reviews/:review_id/comments", () => {
         expect(res.status).toBe(404);
         expect(res.body.msg).toBe("Not Found");
       });
+
+      test("should respond with 400 if review_id is not an int", async () => {
+        const newComment = {
+          username: "mallionaire",
+          body: "jiminy jillickers batman",
+        };
+
+        const res = await request(app)
+          .post("/api/reviews/not_an_int/comments")
+          .send(newComment);
+
+        expect(res.status).toBe(400);
+        expect(res.body.msg).toBe("Bad Request");
+      });
     });
   });
 });
