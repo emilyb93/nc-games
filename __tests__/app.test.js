@@ -314,6 +314,19 @@ describe("/api/reviews/:review_id/comments", () => {
         expect(res.status).toBe(400);
         expect(res.body.msg).toBe("Bad Request");
       });
+
+      test("should respond with 400 if body is not included", async () => {
+        const newComment = {
+          username: "mallionaire",
+        };
+
+        const res = await request(app)
+          .post("/api/reviews/not_an_int/comments")
+          .send(newComment);
+
+        expect(res.status).toBe(400);
+        expect(res.body.msg).toBe("Bad Request");
+      });
     });
   });
 });
