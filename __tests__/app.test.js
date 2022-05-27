@@ -271,7 +271,6 @@ describe("/api/reviews/:review_id/comments", () => {
         .send(newComment);
 
       const { comment } = res.body;
-      console.log(res.body);
 
       expect(res.status).toBe(201);
 

@@ -13,7 +13,6 @@ exports.sendComments = async (req, res, next) => {
 
 exports.addComment = async (req, res, next) => {
   try {
-    console.log(req.body);
     const newComment = req.body;
     const { review_id: reviewId } = req.params;
 
@@ -21,7 +20,6 @@ exports.addComment = async (req, res, next) => {
 
     res.status(201).send({ comment });
   } catch (err) {
-    console.log(err);
     next(err);
   }
 };
