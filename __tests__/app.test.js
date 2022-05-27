@@ -340,7 +340,7 @@ describe("/api/reviews/:review_id/comments", () => {
         expect(res.status).toBe(400);
         expect(res.body.msg).toBe("Bad Request");
       });
-      test("should respond with 400 if body is not included", async () => {
+      test("should respond with 400 if username is not included", async () => {
         const newComment = {
           body: "jiminy jillickers batman",
         };
